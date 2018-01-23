@@ -1,0 +1,4 @@
+apiVersion: v1
+description: Hyperledger Indy is a distributed ledger, purpose-built for decentralized identity.
+name: indy
+version: 0.1.0

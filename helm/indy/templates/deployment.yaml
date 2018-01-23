@@ -1,0 +1,67 @@
+
+{{- range $node := .Values.nodes }}
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" $ }}-{{ $node.alias }}
+  labels:
+    app: {{ template "name" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    node: {{ $node.alias }}
+spec:
+  replicas: {{ $.Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "name" $ }}
+        release: {{ $.Release.Name }}
+        node: {{ $node.alias }}
+    spec:
+      hostname: {{ $node.alias }}
+      # hostNetwork: true
+      containers:
+        - name: {{ $.Chart.Name }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag }}"
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ $node.client_port }}
+            - containerPort: {{ $node.node_port }}
+          env:
+            - name: "node"
+              value: "{{ $node.alias }}"
+            - name: seed
+              valueFrom:
+                secretKeyRef:
+                  name: indy-seed-{{ $node.alias }}
+                  key: seed
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/indy
+            - name: transactions
+              mountPath: /var/lib/indy/{{ $.Values.network_name }}/domain_transactions_genesis
+              subPath: domain_transactions_genesis
+            - name: transactions
+              mountPath: /var/lib/indy/{{ $.Values.network_name }}/pool_transactions_genesis
+              subPath: pool_transactions_genesis
+            - name: config
+              mountPath: /etc/indy/indy_config.py
+              subPath: indy_config.py
+          resources:
+{{ toYaml $.Values.resources | indent 12 }}
+      volumes:
+        - name: transactions
+          configMap:
+            name: indy-node-cm
+        - name: config
+          configMap:
+            name: indy-config
+        - name: data
+          # hostPath:
+          #  path: /var/lib/indy
+          emptyDir: {}
+      #nodeSelector:
+      #  indy-node: {{ $node.alias }}
+{{- end }}

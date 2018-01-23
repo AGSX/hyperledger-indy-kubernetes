@@ -1,0 +1,4 @@
+Indy node deployed. To start the indy pod, the node must be labeled with the alias:
+
+$ node=$(kubectl get nodes -o name)
+$ kubectl label $node indy-node={alias}

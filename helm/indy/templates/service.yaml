@@ -1,0 +1,23 @@
+
+{{- range $node := .Values.nodes }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $node.alias }}
+  labels:
+    app: {{ template "name" $ }}
+    chart: {{ $.Chart.Name }}-{{ $.Chart.Version | replace "+" "_" }}
+    release: {{ $.Release.Name }}
+    heritage: {{ $.Release.Service }}
+    node: {{ $node.alias }}
+spec:
+  ports:
+  - port: {{ $node.node_port }}
+    name: node
+  - port: {{ $node.client_port }}
+    name: client
+  clusterIP: None
+  selector:
+    node: {{ $node.alias }}
+{{- end }}
