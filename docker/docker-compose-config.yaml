@@ -1,0 +1,108 @@
+# NOTE: Old docker compose file for Sovrin/Indy
+
+version: "2"
+
+# networks:
+#   simula:
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: 10.0.1.0/24
+#           gateway: 10.0.1.1
+
+services:
+  
+  steward1:
+    image: asia.gcr.io/amihan-cloudblocks/hyperledger-indy
+    container_name: indy-steward1
+    hostname: steward1
+    network_mode: host
+    # networks:
+    #   simula:
+    #     ipv4_address: 10.0.1.11
+    environment:
+      - node=steward1
+      - node_port=9701
+      - client_port=9702
+    ports:
+      - 9701:9701
+      - 9702:9702
+    volumes:
+      - ./cluster/dev/domain_transactions_sandbox_genesis:/home/indy/.indy/domain_transactions_sandbox_genesis
+      - ./cluster/dev/pool_transactions_sandbox_genesis:/home/indy/.indy/pool_transactions_sandbox_genesis
+      - ./cluster/dev/seed_steward1:/home/indy/.indy/seed
+
+  steward2:
+    image: asia.gcr.io/amihan-cloudblocks/hyperledger-indy
+    container_name: indy-steward2
+    hostname: steward2
+    network_mode: host
+    # networks:
+    #   simula:
+    #     ipv4_address: 10.0.1.12
+    environment:
+      - node=steward2
+      - node_port=9703
+      - client_port=9704
+    ports:
+      - 9703:9703
+      - 9704:9704
+    volumes:
+      - ./cluster/dev/domain_transactions_sandbox_genesis:/home/indy/.indy/domain_transactions_sandbox_genesis
+      - ./cluster/dev/pool_transactions_sandbox_genesis:/home/indy/.indy/pool_transactions_sandbox_genesis
+      - ./cluster/dev/seed_steward2:/home/indy/.indy/seed
+
+  steward3:
+    image: asia.gcr.io/amihan-cloudblocks/hyperledger-indy
+    container_name: indy-steward3
+    hostname: steward3
+    network_mode: host
+    # networks:
+    #   simula:
+    #     ipv4_address: 10.0.1.13
+    environment:
+      - node=steward3
+      - node_port=9705
+      - client_port=9706
+    ports:
+      - 9705:9705
+      - 9706:9706
+    volumes:
+      - ./cluster/dev/domain_transactions_sandbox_genesis:/home/indy/.indy/domain_transactions_sandbox_genesis
+      - ./cluster/dev/pool_transactions_sandbox_genesis:/home/indy/.indy/pool_transactions_sandbox_genesis
+      - ./cluster/dev/seed_steward3:/home/indy/.indy/seed
+
+  steward4:
+    image: asia.gcr.io/amihan-cloudblocks/hyperledger-indy
+    container_name: indy-steward4
+    hostname: steward4
+    network_mode: host
+    # networks:
+    #   simula:
+    #     ipv4_address: 10.0.1.14
+    environment:
+      - node=steward4
+      - node_port=9707
+      - client_port=9708
+    ports:
+      - 9707:9707
+      - 9708:9708
+    volumes:
+      - ./cluster/dev/domain_transactions_sandbox_genesis:/home/indy/.indy/domain_transactions_sandbox_genesis
+      - ./cluster/dev/pool_transactions_sandbox_genesis:/home/indy/.indy/pool_transactions_sandbox_genesis
+      - ./cluster/dev/seed_steward4:/home/indy/.indy/seed
+
+  client:
+    image: asia.gcr.io/amihan-cloudblocks/hyperledger-indy
+    container_name: indy-client
+    hostname: client
+    entrypoint: bash
+    command: -c 'while true; do sleep 3600; done'
+    network_mode: host
+    # networks:
+    #   simula:
+    #     ipv4_address: 10.0.1.100
+    volumes:
+      - ./cluster/dev/domain_transactions_sandbox_genesis:/home/indy/.indy/domain_transactions_sandbox_genesis
+      - ./cluster/dev/pool_transactions_sandbox_genesis:/home/indy/.indy/pool_transactions_sandbox_genesis
+      - ./cluster/dev/seed_client:/home/indy/.indy/seed

@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# chown -R indy:indy /var/lib/indy/*
+
+###
+# Initialize the node with the seed read from /home/indy/seed
+###
+init_indy_keys --name $node --seed $seed
+
+###
+# Start INDY node
+###
+exec start_indy_node $node $node_port $client_port
