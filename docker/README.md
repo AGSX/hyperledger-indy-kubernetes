@@ -66,10 +66,10 @@ docker run -d \
     local/indy
 ```
 
-#### steward1
+#### steward2
 
 ```
-mkdir -p $(pwd)/build/steward1
+mkdir -p $(pwd)/build/steward2
 cp $(pwd)/cluster/dev/* $(pwd)/build/steward2
 echo "00000000000000000000000000000002" > $(pwd)/build/steward2/seed
 docker run -d \
